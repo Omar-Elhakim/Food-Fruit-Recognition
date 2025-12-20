@@ -5,7 +5,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # --- CONFIGURATION ---
-MODEL_PATH = 'Models/my_binary_unet.pth'
+MODEL_PATH = 'Models/Binary_Segmentation_model.pth'
 IMAGE_PATH = 'Project Data/Fruit/Validation/Carambola/Images/96.jpg' # Replace with actual path
 ENCODER = 'resnet34'  # Must match training!
 DEVICE = 'cuda' if torch.cuda.is_available() else 'cpu'

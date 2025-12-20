@@ -7,6 +7,7 @@ import numpy as np
 import Binary_Food_Fruit_Classification_test
 import MulitClass_Fruit_Classification_test
 import Fruit_Binary_Segmentation_test
+import Fruit_Multi_Segmentation_test
 #Image reading 
 # Integrated test processing
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
@@ -45,6 +46,8 @@ def main():
             mask = mask.astype(np.uint8)
             cv2.imwrite(os.path.join(imgPath[:-4],"Binary-Mask.png"), mask)
             # apply multi-segmentation
+            img, multiSeg, overlay, fruits_found =Fruit_Multi_Segmentation_test.test_multi_fruit_image(imgPath)
+            cv2.imwrite(os.path.join(imgPath[:-4],"MultiSegmentation-Mask.png"), multiSeg)
         
         with open(os.path.join(imgPath[:-4],image[:-4]+".txt"),'a') as f:
             f.write(f'{type}\n')
