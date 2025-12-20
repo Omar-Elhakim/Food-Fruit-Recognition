@@ -8,66 +8,76 @@ import Binary_Food_Fruit_Classification_test
 import MulitClass_Fruit_Classification_test
 import Fruit_Binary_Segmentation_test
 import Fruit_Multi_Segmentation_test
-#Image reading 
+import Siamese_food_model_test
+
+# Image reading
 # Integrated test processing
-device = 'cuda' if torch.cuda.is_available() else 'cpu'
-baseIntegratedTestPath='Test Cases Structure/Integerated Test/'
-testFiles=os.listdir(baseIntegratedTestPath)
+device = "cuda" if torch.cuda.is_available() else "cpu"
+baseIntegratedTestPath = "Test Cases Structure/Integerated Test/"
+testFiles = os.listdir(baseIntegratedTestPath)
+
 
 def main():
     for image in testFiles:
         imgPath = os.path.join(baseIntegratedTestPath, image)
         # remove the extension, then the file name , then the 'g'
-        grams=float(image.split('.')[0].split('_')[1][:-1])
-        
+        grams = float(image.split(".")[0].split("_")[1][:-1])
+
         if not os.path.exists(imgPath[:-4]):
             os.makedirs(imgPath[:-4])
 
-        if(Binary_Food_Fruit_Classification_test.predict_image(imgPath)=='Food'):
+        if Binary_Food_Fruit_Classification_test.predict_image(imgPath) == "Food":
             # get food type
-            pass
-            type=''
+            type = Siamese_food_model_test.predict(imgPath)
             # calculate no of calories
-            calories=CalculateCalories('Food',type,grams)
-            with open(os.path.join(imgPath[:-4],imgPath[:-4]+".txt"),'w') as f:
-                f.write('Food\n')
+            calories = CalculateCalories("Food", type, grams)
+            with open(os.path.join(imgPath[:-4], imgPath[:-4] + ".txt"), "w") as f:
+                f.write("Food\n")
         else:
             # get fruit type
-            type=MulitClass_Fruit_Classification_test.test_image(imgPath)
+            type = MulitClass_Fruit_Classification_test.test_image(imgPath)
             # calculate no of calories
-            calories=CalculateCalories('Fruit',type,grams)
-            with open(os.path.join(imgPath[:-4],image[:-4]+".txt"),'w') as f:
-                f.write('Fruit\n')
+            calories = CalculateCalories("Fruit", type, grams)
+            with open(os.path.join(imgPath[:-4], image[:-4] + ".txt"), "w") as f:
+                f.write("Fruit\n")
 
             # apply binary segmentation
-            binaryMask=Fruit_Binary_Segmentation_test.predict(imgPath)
-            mask = binaryMask.squeeze()  
-            mask = (mask * 255)
+            binaryMask = Fruit_Binary_Segmentation_test.predict(imgPath)
+            mask = binaryMask.squeeze()
+            mask = mask * 255
             mask = mask.astype(np.uint8)
-            cv2.imwrite(os.path.join(imgPath[:-4],"Binary-Mask.png"), mask)
+            cv2.imwrite(os.path.join(imgPath[:-4], "Binary-Mask.png"), mask)
             # apply multi-segmentation
-            img, multiSeg, overlay, fruits_found =Fruit_Multi_Segmentation_test.test_multi_fruit_image(imgPath)
-            cv2.imwrite(os.path.join(imgPath[:-4],"MultiSegmentation-Mask.png"), multiSeg)
-        
-        with open(os.path.join(imgPath[:-4],image[:-4]+".txt"),'a') as f:
-            f.write(f'{type}\n')
-            f.write(f'{calories}\n')
+            img, multiSeg, overlay, fruits_found = (
+                Fruit_Multi_Segmentation_test.test_multi_fruit_image(imgPath)
+            )
+            cv2.imwrite(
+                os.path.join(imgPath[:-4], "MultiSegmentation-Mask.png"), multiSeg
+            )
 
-def CalculateCalories(flag,className,grams):
-    if(flag=='Fruit'):
-        fileNames=['Project Data/Fruit/Calories.txt']
+        with open(os.path.join(imgPath[:-4], image[:-4] + ".txt"), "a") as f:
+            f.write(f"{type}\n")
+            f.write(f"{calories}\n")
+
+
+def CalculateCalories(flag, className, grams):
+    if flag == "Fruit":
+        fileNames = ["Project Data/Fruit/Calories.txt"]
     else:
-        fileNames=[
-            'Project Data/Food/Train Calories.txt',
-            'Project Data/Food/Val Calories.txt'
+        fileNames = [
+            "Project Data/Food/Train Calories.txt",
+            "Project Data/Food/Val Calories.txt",
         ]
 
     for fileName in fileNames:
-        with open(fileName,'r') as f:
+        with open(fileName, "r") as f:
             for line in f:
-                if(line):
-                    if(className.lower() in line.lower()):
-                        caloriesPerGram = float(re.search(r"(\d+\.?\d*)", line).group(1))
+                if line:
+                    if className.lower() in line.lower():
+                        caloriesPerGram = float(
+                            re.search(r"(\d+\.?\d*)", line).group(1)
+                        )
                         return caloriesPerGram * grams
+
 
 main()
