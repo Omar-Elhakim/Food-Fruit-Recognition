@@ -29,7 +29,7 @@ def test_image(img_path, model_path="Models/MultiClass_Fruit_Classification_mode
     model_test = models.resnet18(weights=None)
     num_ftrs = model_test.fc.in_features
     model_test.fc = nn.Sequential(
-        nn.Dropout(p=0.2),
+        nn.Dropout(p=0.5),
         nn.Linear(num_ftrs, 30)
     )
     
