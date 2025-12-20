@@ -19,7 +19,7 @@ train_transforms = transforms.Compose([
 ])
 
 
-def test_image(img_path, model_path="Models/best_fruit_model.pth", class_names=fruit_names):
+def test_image(img_path, model_path="Models/MultiClass_Fruit_Classification_model.pth", class_names=fruit_names):
     
     # Load image
     img = Image.open(img_path).convert("RGB")

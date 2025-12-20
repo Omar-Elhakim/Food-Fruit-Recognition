@@ -4,7 +4,7 @@ import torch.nn as nn
 from torchvision import models, transforms
 from PIL import Image
 import os
-model_path = "Models/model_A_food_vs_fruit.pth" 
+model_path = "Models/Binary_Food_Fruit_Classification_model.pth" 
 test_image = "Project Data/Fruit/Validation/Avocado/Images/66.jpg"          
 
 
