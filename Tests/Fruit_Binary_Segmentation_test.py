@@ -39,9 +39,14 @@ def preprocess_image(img_path):
     
     return img, img_tensor.to(DEVICE)
 
+_cached_model = None
+
 def predict(img_path):
+    global _cached_model
     _,img_tensor=preprocess_image(img_path)
-    model = load_model()
+    if _cached_model is None:
+        _cached_model = load_model()
+    model = _cached_model
 
     with torch.no_grad():
         logits = model(img_tensor)

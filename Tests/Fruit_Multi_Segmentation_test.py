@@ -101,12 +101,17 @@ def extract_detected_fruits(mask, min_area_ratio=0.01):
 
     return detected
 
+_cached_model = None
+
 def test_multi_fruit_image(image_path):
     """
     Test semantic segmentation on image containing multiple fruits
     """
+    global _cached_model
 
-    model = load_model("Models/Multi-Segmentation-model.h5")
+    if _cached_model is None:
+        _cached_model = load_model("Models/Multi-Segmentation-model.h5")
+    model = _cached_model
     # -------- Read image --------
     img_bgr = cv2.imread(image_path)
     if img_bgr is None:

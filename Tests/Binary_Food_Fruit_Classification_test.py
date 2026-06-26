@@ -34,8 +34,13 @@ def load_model(model_path):
     model.eval()
     return model
 
+_cached_model = None
+
 def predict_image(path):
-    model=load_model(model_path)
+    global _cached_model
+    if _cached_model is None:
+        _cached_model = load_model(model_path)
+    model = _cached_model
     test_transforms = transforms.Compose([
         transforms.Resize((224, 224)),
         transforms.ToTensor(),

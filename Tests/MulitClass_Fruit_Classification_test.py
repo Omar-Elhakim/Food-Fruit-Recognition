@@ -19,24 +19,30 @@ train_transforms = transforms.Compose([
 ])
 
 
+_cached_model = None
+
 def test_image(img_path, model_path="Models/MultiClass_Fruit_Classification_model.pth", class_names=fruit_names):
-    
+    global _cached_model
+
     # Load image
     img = Image.open(img_path).convert("RGB")
     img_tensor = train_transforms(img).unsqueeze(0).to(device)
-    
-    # Load model
-    model_test = models.resnet18(weights=None)
-    num_ftrs = model_test.fc.in_features
-    model_test.fc = nn.Sequential(
-        nn.Dropout(p=0.5),
-        nn.Linear(num_ftrs, 30)
-    )
-    
-    model_test.load_state_dict(torch.load(model_path, map_location=device))
-    model_test.to(device)
-    model_test.eval()
-    
+
+    # Load model (once, then reuse)
+    if _cached_model is None:
+        model_test = models.resnet18(weights=None)
+        num_ftrs = model_test.fc.in_features
+        model_test.fc = nn.Sequential(
+            nn.Dropout(p=0.5),
+            nn.Linear(num_ftrs, 30)
+        )
+
+        model_test.load_state_dict(torch.load(model_path, map_location=device))
+        model_test.to(device)
+        model_test.eval()
+        _cached_model = model_test
+    model_test = _cached_model
+
     # Predict
     with torch.no_grad():
         outputs = model_test(img_tensor)

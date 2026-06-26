@@ -98,18 +98,25 @@ def load_model(CONV_NET, MODEL_WEIGHTS, device):
     return model
 
 
+_cached_model = None
+_cached_ref = None
+
 def predict(img_path, device, ref_embeddings=None) -> str:
+    global _cached_model, _cached_ref
     warnings.filterwarnings("ignore")
     query_img = read_and_process_image(img_path).unsqueeze(0).to(device)
-    # if not model:
-    model = load_model("googlenet", "Models/best_googlenet_2248.pth", device)
+    if _cached_model is None:
+        _cached_model = load_model("googlenet", "Models/best_googlenet_2248.pth", device)
+    model = _cached_model
     if not ref_embeddings:
-        path = "Models/ref_embeddings.pth"
-        if not os.path.exists(path):
-            print("Error: " + str(path) + " Doesn't Exist")
-            return "No match"
-        with open(path, "rb") as file:
-            ref_embeddings = pickle.load(file)
+        if _cached_ref is None:
+            path = "Models/ref_embeddings.pth"
+            if not os.path.exists(path):
+                print("Error: " + str(path) + " Doesn't Exist")
+                return "No match"
+            with open(path, "rb") as file:
+                _cached_ref = pickle.load(file)
+        ref_embeddings = _cached_ref
 
     type = classify(
         query_img, model, ref_embeddings["ref_embeddings"], ref_embeddings["classes"]
