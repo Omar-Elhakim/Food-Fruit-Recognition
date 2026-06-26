@@ -1,0 +1,3 @@
+Fruit
+Pineapple
+110.0

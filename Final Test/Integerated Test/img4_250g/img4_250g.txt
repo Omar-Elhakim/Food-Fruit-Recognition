@@ -1,0 +1,3 @@
+Fruit
+Avocado
+400.0
