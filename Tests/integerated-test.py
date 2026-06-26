@@ -81,4 +81,5 @@ def CalculateCalories(flag, className, grams):
                         return caloriesPerGram * grams
 
 
-main()
+if __name__ == "__main__":
+    main()
