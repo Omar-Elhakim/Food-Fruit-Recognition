@@ -56,7 +56,7 @@ def predict_image(path):
         confidence, pred = torch.max(probabilities, 1)
         
     label = "Food" if pred.item() == 0 else "Fruit"
-    return f"Prediction: {label}"
+    return label
 
 if __name__ == "__main__":
-    print(predict_image(test_image))
+    print(f"Prediction: {predict_image(test_image)}")
