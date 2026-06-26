@@ -121,11 +121,16 @@ model.to(device)
 # train_list = os.listdir(ROOT + "Food/Train")
 for cls in classes_folders:
     images = os.listdir(ROOT + "Food/Train/" + cls)
+    class_embs = []
     for img in images:
         emb = get_embeddings(ROOT + "Food/Train/" + cls + "/" + img, model)
-        classes_list.append(cls)
-        ref_embeddings.append(emb)
-        break  # if you want one ref_embedding per class
+        class_embs.append(emb)
+    # Average all training embeddings for this class into one robust
+    # reference, then re-normalize to the unit hypersphere.
+    class_emb = torch.cat(class_embs, dim=0).mean(dim=0, keepdim=True)
+    class_emb = F.normalize(class_emb, p=2, dim=1)
+    classes_list.append(cls)
+    ref_embeddings.append(class_emb)
 
 ref_embeddings = torch.stack(ref_embeddings)
 print("Ref Embedding Shape: ", ref_embeddings.shape)
