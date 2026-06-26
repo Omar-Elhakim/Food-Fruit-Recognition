@@ -14,7 +14,12 @@ import food_siamese
 # Integrated test processing
 device = "cuda" if torch.cuda.is_available() else "cpu"
 baseIntegratedTestPath = "samples/integrated/"
-testFiles = os.listdir(baseIntegratedTestPath)
+# Only the input images, not the per-image output folders this pipeline creates.
+testFiles = [
+    f
+    for f in os.listdir(baseIntegratedTestPath)
+    if os.path.isfile(os.path.join(baseIntegratedTestPath, f))
+]
 
 
 def main():
