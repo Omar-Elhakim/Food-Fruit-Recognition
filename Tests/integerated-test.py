@@ -13,7 +13,7 @@ import Siamese_food_model_test
 # Image reading
 # Integrated test processing
 device = "cuda" if torch.cuda.is_available() else "cpu"
-baseIntegratedTestPath = "Test Cases Structure/Integerated Test/"
+baseIntegratedTestPath = "Final Test/Integerated Test/"
 testFiles = os.listdir(baseIntegratedTestPath)
 
 
@@ -28,10 +28,11 @@ def main():
 
         if Binary_Food_Fruit_Classification_test.predict_image(imgPath) == "Food":
             # get food type
-            type = Siamese_food_model_test.predict(imgPath)
+            type = Siamese_food_model_test.predict(imgPath,device)
             # calculate no of calories
             calories = CalculateCalories("Food", type, grams)
-            with open(os.path.join(imgPath[:-4], imgPath[:-4] + ".txt"), "w") as f:
+            # with open(os.path.join(imgPath[:-4], imgPath[:-4] + ".txt"), "w") as f:
+            with open(os.path.join(imgPath[:-4], image[:-4] + ".txt"), "w") as f:
                 f.write("Food\n")
         else:
             # get fruit type

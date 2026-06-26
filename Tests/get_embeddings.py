@@ -47,7 +47,7 @@ def main():
     classes_list = []
     ref_embeddings = []
     model = EmbeddingNet(embedding_dimension=EMBEDDING_DIM, conv_net=CONV_NET)
-    model.load_state_dict(torch.load(MODEL_WEIGHTS, weights_only=True))
+    model.load_state_dict(torch.load(MODEL_WEIGHTS, weights_only=True,map_location=device))
     model.to(device)
 
     # train_list = os.listdir(ROOT + "Food/Train")

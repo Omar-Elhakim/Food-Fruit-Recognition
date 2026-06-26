@@ -92,17 +92,17 @@ def classify(
 
 
 def load_model(CONV_NET, MODEL_WEIGHTS, device):
-    model = EmbeddingNet(embedding_dimension=64, conv_net=CONV_NET)
-    model.load_state_dict(torch.load(MODEL_WEIGHTS, weights_only=True))
+    model = EmbeddingNet(embedding_dimension=64, conv_net=CONV_NET).to(device)
+    model.load_state_dict(torch.load(MODEL_WEIGHTS, weights_only=True ,map_location=device))
     model.to(device)
     return model
 
 
-def predict(img_path, device, model=None, ref_embeddings=None) -> str:
+def predict(img_path, device, ref_embeddings=None) -> str:
     warnings.filterwarnings("ignore")
     query_img = read_and_process_image(img_path).unsqueeze(0).to(device)
-    if not model:
-        model = load_model("googlenet", "Models/best_googlenet_2248.pth", device)
+    # if not model:
+    model = load_model("googlenet", "Models/best_googlenet_2248.pth", device)
     if not ref_embeddings:
         path = "Models/ref_embeddings.pth"
         if not os.path.exists(path):
@@ -118,8 +118,8 @@ def predict(img_path, device, model=None, ref_embeddings=None) -> str:
 
 
 if __name__ == "__main__":
-    ROOT = "Test Cases Structure/Siamese Case II Test/"
-    anchor = ROOT + "Anchor.JPG"
+    ROOT = "Final Test/Siamese Case II Test/"
+    anchor = ROOT + "Anchor.jpg"
     CONV_NET = sys.argv[1]
     MODEL_WEIGHTS = sys.argv[2]
     EMBEDDING_DIM = 64
@@ -154,9 +154,9 @@ if __name__ == "__main__":
     ref_embeddings = torch.cat(ref_embeddings, dim=0)
 
     label = predict(
-        ROOT + "Anchor.JPG",
+        ROOT + "Anchor.jpg",
         device,
-        model,
+        # model,
         ref_embeddings={"ref_embeddings": ref_embeddings, "classes": testList},
     )
     print("Label: ", label)
