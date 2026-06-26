@@ -43,10 +43,10 @@ multi-class mask (30 fruit types + background).
 ## Repository structure
 
 ```
-TrainingNotebooks/   Jupyter notebooks used to train each model (with logs)
-Tests/               Per-part test scripts + the integrated pipeline
-Final Test/          Sample images for the Siamese and integrated tests
-ProjectDescription.pdf  Original project brief
+src/         Inference scripts per part + the integrated pipeline
+notebooks/   Jupyter notebooks used to train each model (with logs)
+samples/     Sample images for the Siamese and integrated runs
+docs/        Original project brief (ProjectDescription.pdf)
 ```
 
 ## Getting started
@@ -54,8 +54,7 @@ ProjectDescription.pdf  Original project brief
 ### Prerequisites
 
 ```bash
-pip install torch torchvision segmentation-models-pytorch tensorflow \
-            opencv-python numpy pillow matplotlib
+pip install -r requirements.txt
 ```
 
 ### Required data and weights (not included)
@@ -68,19 +67,19 @@ place:
   `Models/Binary_Food_Fruit_Classification_model.pth`,
   `Models/best_googlenet_2248.pth`, `Models/ref_embeddings.pth`, …).
 - The dataset under `Project Data/` following the `Food/` and `Fruit/`
-  `Train`/`Validation` layout described in `ProjectDescription.pdf`.
+  `Train`/`Validation` layout described in `docs/ProjectDescription.pdf`.
 
-The models can be (re)trained from the notebooks in `TrainingNotebooks/`.
+The models can be (re)trained from the notebooks in `notebooks/`.
 
 ## Usage
 
 Run the full integrated pipeline from the repository root:
 
 ```bash
-python Tests/integerated-test.py
+python src/integrated_pipeline.py
 ```
 
-For each image in `Final Test/Integerated Test/`, it classifies food vs. fruit,
+For each image in `samples/integrated/`, it classifies food vs. fruit,
 recognizes the type, computes calories, and (for fruit) saves binary and
 multi-class segmentation masks alongside a `.txt` result file.
 
@@ -88,14 +87,14 @@ The Siamese one-shot test can be run standalone with a backbone name and weights
 path:
 
 ```bash
-python Tests/Siamese_food_model_test.py googlenet Models/best_googlenet_2248.pth
+python src/food_siamese.py googlenet Models/best_googlenet_2248.pth
 ```
 
-`get_embeddings.py` regenerates the Siamese reference embeddings from the
+`src/get_embeddings.py` regenerates the Siamese reference embeddings from the
 training set:
 
 ```bash
-python get_embeddings.py googlenet Models/best_googlenet_2248.pth
+python src/get_embeddings.py googlenet Models/best_googlenet_2248.pth
 ```
 
 ## License

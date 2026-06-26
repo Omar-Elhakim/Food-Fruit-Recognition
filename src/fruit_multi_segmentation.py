@@ -154,7 +154,7 @@ def test_multi_fruit_image(image_path):
     return img_rgb, colored_mask, overlay, detected_fruits
 
 if __name__ == "__main__":
-    img, seg, overlay, fruits_found = test_multi_fruit_image('Test Cases Structure/Integerated Test/img1_100g.jpg')
+    img, seg, overlay, fruits_found = test_multi_fruit_image('samples/integrated/img1_180g.jpg')
 
     print("Detected fruits:", fruits_found)
 

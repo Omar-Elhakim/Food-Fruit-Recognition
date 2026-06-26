@@ -125,7 +125,7 @@ def predict(img_path, device, ref_embeddings=None) -> str:
 
 
 if __name__ == "__main__":
-    ROOT = "Final Test/Siamese Case II Test/"
+    ROOT = "samples/siamese/"
     anchor = ROOT + "Anchor.jpg"
     CONV_NET = sys.argv[1]
     MODEL_WEIGHTS = sys.argv[2]

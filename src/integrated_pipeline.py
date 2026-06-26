@@ -4,16 +4,16 @@ import re
 import cv2
 import numpy as np
 
-import Binary_Food_Fruit_Classification_test
-import MulitClass_Fruit_Classification_test
-import Fruit_Binary_Segmentation_test
-import Fruit_Multi_Segmentation_test
-import Siamese_food_model_test
+import food_fruit_classifier
+import fruit_classifier
+import fruit_binary_segmentation
+import fruit_multi_segmentation
+import food_siamese
 
 # Image reading
 # Integrated test processing
 device = "cuda" if torch.cuda.is_available() else "cpu"
-baseIntegratedTestPath = "Final Test/Integerated Test/"
+baseIntegratedTestPath = "samples/integrated/"
 testFiles = os.listdir(baseIntegratedTestPath)
 
 
@@ -26,31 +26,30 @@ def main():
         if not os.path.exists(imgPath[:-4]):
             os.makedirs(imgPath[:-4])
 
-        if Binary_Food_Fruit_Classification_test.predict_image(imgPath) == "Food":
+        if food_fruit_classifier.predict_image(imgPath) == "Food":
             # get food type
-            type = Siamese_food_model_test.predict(imgPath,device)
+            type = food_siamese.predict(imgPath, device)
             # calculate no of calories
             calories = CalculateCalories("Food", type, grams)
-            # with open(os.path.join(imgPath[:-4], imgPath[:-4] + ".txt"), "w") as f:
             with open(os.path.join(imgPath[:-4], image[:-4] + ".txt"), "w") as f:
                 f.write("Food\n")
         else:
             # get fruit type
-            type = MulitClass_Fruit_Classification_test.test_image(imgPath)
+            type = fruit_classifier.test_image(imgPath)
             # calculate no of calories
             calories = CalculateCalories("Fruit", type, grams)
             with open(os.path.join(imgPath[:-4], image[:-4] + ".txt"), "w") as f:
                 f.write("Fruit\n")
 
             # apply binary segmentation
-            binaryMask = Fruit_Binary_Segmentation_test.predict(imgPath)
+            binaryMask = fruit_binary_segmentation.predict(imgPath)
             mask = binaryMask.squeeze()
             mask = mask * 255
             mask = mask.astype(np.uint8)
             cv2.imwrite(os.path.join(imgPath[:-4], "Binary-Mask.png"), mask)
             # apply multi-segmentation
             img, multiSeg, overlay, fruits_found = (
-                Fruit_Multi_Segmentation_test.test_multi_fruit_image(imgPath)
+                fruit_multi_segmentation.test_multi_fruit_image(imgPath)
             )
             cv2.imwrite(
                 os.path.join(imgPath[:-4], "MultiSegmentation-Mask.png"), multiSeg

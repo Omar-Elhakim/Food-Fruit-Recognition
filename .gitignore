@@ -5,3 +5,6 @@ Test Cases Structure/
 *.pt
 Models/
 Reports/
+
+# Regenerated per-image outputs from the integrated pipeline
+samples/integrated/*/
