@@ -2,4 +2,6 @@ Project Data/
 Test Cases Structure/
 *__pycache__*
 *.pth
+*.pt
 Models/
+Reports/
