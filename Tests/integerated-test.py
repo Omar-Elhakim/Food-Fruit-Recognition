@@ -58,7 +58,7 @@ def main():
 
         with open(os.path.join(imgPath[:-4], image[:-4] + ".txt"), "a") as f:
             f.write(f"{type}\n")
-            f.write(f"{calories}\n")
+            f.write(f"{calories if calories is not None else 'Unknown'}\n")
 
 
 def CalculateCalories(flag, className, grams):
@@ -79,6 +79,9 @@ def CalculateCalories(flag, className, grams):
                             re.search(r"(\d+\.?\d*)", line).group(1)
                         )
                         return caloriesPerGram * grams
+
+    # No matching calorie entry found for this class
+    return None
 
 
 if __name__ == "__main__":
